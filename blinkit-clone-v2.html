@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blinkit — Grocery in 10 minutes</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --y:#f8c200;
+  --yd:#e0a800;
+  --g:#0c831f;
+  --gl:#e9f7ec;
+  --dark:#1c1c1c;
+  --mid:#4b5563;
+  --muted:#9ca3af;
+  --border:#ebebeb;
+  --bg:#f4f4f4;
+  --white:#fff;
+  --red:#e63946;
+  --card-shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh}
+
+/* TOPBAR */
+.topbar{
+  background:var(--dark);
+  color:#d1d5db;
+  font-size:12px;
+  text-align:center;
+  padding:7px 24px;
+  letter-spacing:.3px;
+}
+.topbar span{color:var(--y);font-weight:700}
+
+/* NAVBAR */
+nav{
+  background:var(--white);
+  height:68px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:0 32px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:1px solid var(--border);
+  box-shadow:0 1px 8px rgba(0,0,0,0.06);
+}
+
+.logo{
+  font-family:'Nunito',sans-serif;
+  font-size:30px;
+  font-weight:900;
+  color:#f8c200;
+  letter-spacing:-1.5px;
+  cursor:pointer;
+  flex-shrink:0;
+  user-select:none;
+}
+.logo em{color:var(--dark);font-style:normal}
+
+.loc-pill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 14px;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:border-color .2s;
+}
+.loc-pill:hover{border-color:var(--y)}
+.loc-pill-top{font-size:11px;font-weight:700;color:var(--dark);display:block}
+.loc-pill-bot{font-size:12px;color:var(--mid);display:block;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.loc-arrow{font-size:10px;color:var(--muted)}
+
+.searchbox{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#f7f7f7;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:0 16px;
+  height:44px;
+  transition:border-color .2s,background .2s;
+}
+.searchbox:focus-within{border-color:#f8c200;background:var(--white)}
+.searchbox svg{flex-shrink:0;opacity:.45}
+.searchbox input{
+  border:none;background:transparent;font-size:14px;
+  font-family:'DM Sans',sans-serif;width:100%;outline:none;color:var(--dark);
+}
+.searchbox input::placeholder{color:var(--muted)}
+
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+.btn-ghost{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;
+  cursor:pointer;border:1.5px solid var(--border);background:transparent;
+  color:var(--dark);font-family:'DM Sans',sans-serif;transition:all .2s;
+}
+.btn-ghost:hover{border-color:#ccc;background:#f9f9f9}
+
+.btn-cart{
+  display:flex;align-items:center;gap:10px;
+  background:var(--y);border:none;padding:10px 18px;
+  border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'Nunito',sans-serif;
+  color:var(--dark);transition:all .2s;position:relative;
+}
+.btn-cart:hover{background:var(--yd);transform:translateY(-1px);box-shadow:0 4px 12px rgba(248,194,0,.4)}
+.cart-badge{
+  background:var(--g);color:#fff;
+  border-radius:5px;padding:2px 7px;font-size:12px;font-weight:800;
+  font-family:'Nunito',sans-serif;min-width:22px;text-align:center;
+}
+.cart-price{font-size:13px;font-weight:700;border-left:1.5px solid rgba(0,0,0,.15);padding-left:10px}
+
+/* HERO */
+.hero{
+  background:linear-gradient(110deg,#fffceb 0%,#fff8d6 60%,#ffeea0 100%);
+  padding:40px 32px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:32px;
+  border-bottom:1px solid #f0e680;
+  overflow:hidden;
+  position:relative;
+}
+.hero::after{
+  content:'';position:absolute;
+  right:-80px;top:-80px;
+  width:360px;height:360px;
+  background:radial-gradient(circle,rgba(248,194,0,.25) 0%,transparent 70%);
+  border-radius:50%;pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--g);color:#fff;
+  font-size:12px;font-weight:700;letter-spacing:.5px;
+  padding:5px 12px;border-radius:20px;margin-bottom:14px;
+  text-transform:uppercase;
+}
+.hero h1{
+  font-family:'Nunito',sans-serif;
+  font-size:42px;font-weight:900;
+  color:var(--dark);line-height:1.08;
+  letter-spacing:-1px;
+}
+.hero h1 .hl{color:var(--g)}
+.hero p{font-size:15px;color:var(--mid);margin-top:10px;font-weight:500;line-height:1.6}
+.hero-actions{display:flex;gap:12px;margin-top:22px;align-items:center}
+.hero-btn-main{
+  background:var(--dark);color:#fff;border:none;
+  padding:13px 28px;border-radius:10px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'Nunito',sans-serif;transition:all .2s;
+}
+.hero-btn-main:hover{background:#333;transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.hero-note{font-size:12px;color:var(--mid);font-weight:500}
+.hero-note span{color:var(--g);font-weight:700}
+.hero-visual{
+  font-size:120px;position:relative;z-index:1;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,.1));
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* PROMO STRIP */
+.promo-strip{
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:12px 32px;
+  display:flex;gap:32px;overflow-x:auto;
+  scrollbar-width:none;
+}
+.promo-strip::-webkit-scrollbar{display:none}
+.promo-chip{
+  display:flex;align-items:center;gap:8px;
+  white-space:nowrap;font-size:13px;font-weight:600;color:var(--mid);
+  flex-shrink:0;
+}
+.promo-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--y)}
+
+/* LAYOUT */
+.page{display:flex;min-height:calc(100vh - 68px)}
+
+/* SIDEBAR */
+.sidebar{
+  width:88px;flex-shrink:0;background:var(--white);
+  border-right:1px solid var(--border);
+  padding:16px 0;position:sticky;top:68px;
+  height:calc(100vh - 68px);overflow-y:auto;
+  scrollbar-width:none;
+}
+.sidebar::-webkit-scrollbar{display:none}
+
+.scat{
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding:12px 8px;cursor:pointer;
+  border-left:3px solid transparent;
+  transition:all .2s;
+}
+.scat:hover{background:#fafafa}
+.scat.active{border-left-color:var(--y);background:#fffceb}
+.scat-emoji{font-size:28px}
+.scat-label{font-size:10px;font-weight:700;color:var(--mid);text-align:center;line-height:1.3}
+.scat.active .scat-label{color:var(--dark)}
+
+/* MAIN */
+.main{flex:1;padding:24px 28px;min-width:0}
+
+/* BANNER */
+.banner-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.banner{
+  border-radius:18px;padding:22px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;transition:transform .2s;overflow:hidden;position:relative;
+}
+.banner:hover{transform:scale(1.01)}
+.banner-1{background:linear-gradient(135deg,#0c831f 0%,#09661a 100%)}
+.banner-2{background:linear-gradient(135deg,#1a56db 0%,#1341a8 100%)}
+.banner-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#fff;line-height:1.2}
+.banner-sub{font-size:12px;color:rgba(255,255,255,.75);margin-top:4px}
+.banner-tag{
+  background:var(--y);color:var(--dark);
+  font-size:12px;font-weight:800;padding:5px 12px;
+  border-radius:20px;margin-top:12px;display:inline-block;
+  font-family:'Nunito',sans-serif;
+}
+.banner-emoji{font-size:60px;position:relative;z-index:1}
+
+/* SECTION */
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.sec-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:var(--dark)}
+.sec-link{font-size:13px;font-weight:700;color:var(--g);cursor:pointer;text-decoration:none}
+.sec-link:hover{text-decoration:underline}
+
+/* PRODUCTS */
+.pgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(172px,1fr));
+  gap:14px;
+  margin-bottom:36px;
+}
+
+.pcard{
+  background:var(--white);border-radius:16px;
+  border:1.5px solid var(--border);
+  overflow:hidden;cursor:pointer;
+  transition:all .22s cubic-bezier(.4,0,.2,1);
+  position:relative;
+}
+.pcard:hover{
+  border-color:#e0c000;
+  transform:translateY(-4px);
+  box-shadow:0 12px 28px rgba(0,0,0,.09);
+}
+
+.pdiscount{
+  position:absolute;top:10px;left:10px;
+  background:var(--red);color:#fff;
+  font-size:10px;font-weight:800;
+  padding:3px 7px;border-radius:5px;
+  letter-spacing:.3px;
+}
+
+.pimg{
+  height:136px;display:flex;align-items:center;justify-content:center;
+  font-size:62px;background:#fafafa;
+  border-bottom:1px solid #f3f3f3;
+}
+
+.pinfo{padding:12px}
+
+.pname{
+  font-size:13px;font-weight:600;color:var(--dark);
+  line-height:1.4;margin-bottom:2px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.pweight{font-size:11px;color:var(--muted);margin-bottom:10px}
+
+.pfooter{display:flex;align-items:center;justify-content:space-between;gap:6px}
+
+.pprice{
+  font-family:'Nunito',sans-serif;
+  font-size:16px;font-weight:900;color:var(--dark);
+}
+.pmrp{font-size:11px;color:var(--muted);text-decoration:line-through;margin-top:1px}
+
+.addbtn{
+  background:var(--white);border:1.5px solid var(--g);
+  color:var(--g);padding:7px 16px;border-radius:8px;
+  font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'Nunito',sans-serif;transition:all .18s;white-space:nowrap;
+}
+.addbtn:hover{background:var(--g);color:#fff}
+
+.qtyctrl{
+  display:flex;align-items:center;
+  border:1.5px solid var(--g);border-radius:8px;overflow:hidden;
+}
+.qbtn{
+  background:var(--g);color:#fff;border:none;
+  width:32px;height:32px;font-size:17px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s;flex-shrink:0;
+}
+.qbtn:hover{background:#0a6b19}
+.qnum{
+  width:30px;text-align:center;font-size:14px;
+  font-weight:800;color:var(--g);
+  font-family:'Nunito',sans-serif;
+}
+
+/* CART DRAWER */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:200;display:none;backdrop-filter:blur(3px);
+}
+.overlay.on{display:block}
+
+.drawer{
+  position:fixed;right:-440px;top:0;bottom:0;width:420px;
+  background:var(--white);z-index:201;
+  display:flex;flex-direction:column;
+  transition:right .32s cubic-bezier(.4,0,.2,1);
+  box-shadow:-6px 0 40px rgba(0,0,0,.14);
+}
+.drawer.on{right:0}
+
+.dhead{
+  padding:18px 22px;
+  background:var(--y);
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+.dhead-left h3{
+  font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:var(--dark);
+}
+.dhead-delivery{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--white);color:var(--g);
+  font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;margin-top:4px;
+}
+.dclose{
+  background:rgba(0,0,0,.12);color:var(--dark);border:none;
+  width:34px;height:34px;border-radius:50%;font-size:16px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;flex-shrink:0;
+}
+.dclose:hover{background:rgba(0,0,0,.2)}
+
+.dbody{flex:1;overflow-y:auto;padding:16px 22px}
+
+.empty-cart{
+  text-align:center;padding:60px 20px;
+}
+.empty-cart-img{font-size:72px;margin-bottom:16px;opacity:.6}
+.empty-cart h4{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:6px}
+.empty-cart p{font-size:13px;color:var(--muted)}
+
+.citem{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 0;border-bottom:1px solid #f5f5f5;
+}
+.citem-img{font-size:34px;width:46px;text-align:center;flex-shrink:0}
+.citem-info{flex:1;min-width:0}
+.citem-name{font-size:13px;font-weight:600;color:var(--dark);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citem-w{font-size:11px;color:var(--muted);margin-top:2px}
+.citem-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.citem-price{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800}
+
+.dfooter{
+  padding:18px 22px;
+  border-top:1px solid var(--border);
+  background:var(--white);
+}
+.bill{margin-bottom:16px}
+.brow{
+  display:flex;justify-content:space-between;
+  font-size:13px;color:var(--mid);margin-bottom:9px;
+}
+.brow.total{
+  font-size:15px;font-weight:800;color:var(--dark);
+  border-top:2px dashed var(--border);padding-top:12px;margin-top:4px;
+}
+.free{color:var(--g);font-weight:700}
+
+.paybtn{
+  width:100%;background:var(--y);color:var(--dark);
+  border:none;padding:15px;border-radius:12px;
+  font-size:16px;font-weight:800;cursor:pointer;
+  font-family:'Nunito',sans-serif;transition:all .2s;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.paybtn:hover{background:var(--yd);transform:scale(1.01)}
+.paybtn-r{font-size:13px;font-weight:600;opacity:.8}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--dark);color:#fff;
+  padding:13px 22px;border-radius:12px;
+  font-size:13px;font-weight:600;
+  z-index:300;transition:transform .3s cubic-bezier(.4,0,.2,1);
+  white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2);
+  display:flex;align-items:center;gap:8px;
+}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+/* FOOTER */
+.site-footer{
+  background:var(--dark);color:#6b7280;
+  padding:48px 32px 32px;
+  border-top:1px solid #2a2a2a;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;
+}
+.footer-brand .logo{margin-bottom:12px;display:block}
+.footer-brand p{font-size:13px;line-height:1.7;max-width:240px}
+.footer-col h5{
+  font-size:13px;font-weight:700;color:#d1d5db;
+  margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px;
+}
+.footer-col a{
+  display:block;font-size:13px;color:#6b7280;
+  text-decoration:none;margin-bottom:8px;cursor:pointer;transition:color .2s;
+}
+.footer-col a:hover{color:var(--y)}
+.footer-bottom{
+  border-top:1px solid #2a2a2a;padding-top:20px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;
+}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .hero{grid-template-columns:1fr}
+  .hero-visual{display:none}
+  .hero h1{font-size:28px}
+  .banner-row{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  nav{padding:0 16px;gap:12px}
+  .loc-pill{display:none}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  🚀 Get <span>10-minute delivery</span> on groceries, dairy, fruits and more — available in 30+ cities
+</div>
+
+<nav>
+  <div class="logo">blink<em>it</em></div>
+
+  <div class="loc-pill" onclick="toast('📍 Change location coming soon')">
+    <div>
+      <span class="loc-pill-top">⚡ Delivery in 10 mins</span>
+      <span class="loc-pill-bot">Sector 18, Noida, Uttar Pradesh</span>
+    </div>
+    <span class="loc-arrow">▾</span>
+  </div>
+
+  <div class="searchbox">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" placeholder='Search "eggs, milk, bread…"' id="searchInput" oninput="filterProducts()">
+  </div>
+
+  <div class="nav-right">
+    <button class="btn-ghost" onclick="toast('Login coming soon!')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      Login
+    </button>
+    <button class="btn-cart" onclick="openCart()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <span class="cart-badge" id="cartCount">0</span>
+      <span class="cart-price" id="cartPrice" style="display:none">₹<span id="cartAmt">0</span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="promo-strip">
+  <div class="promo-chip"><span class="dot"></span> Free delivery on orders above ₹199</div>
+  <div class="promo-chip"><span class="dot"></span> Fresh fruits & vegetables daily</div>
+  <div class="promo-chip"><span class="dot"></span> 10-minute express delivery</div>
+  <div class="promo-chip"><span class="dot"></span> 50% off on first 3 orders — use BLINK50</div>
+  <div class="promo-chip"><span class="dot"></span> New: Midnight delivery now available</div>
+  <div class="promo-chip"><span class="dot"></span> 2000+ products across all categories</div>
+</div>
+
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">⚡ India's fastest delivery</div>
+    <h1>Groceries at<br>your door in<br><span class="hl">10 minutes</span></h1>
+    <p>From milk to munchies — everything fresh,<br>delivered faster than you can say "blinkit".</p>
+    <div class="hero-actions">
+      <button class="hero-btn-main" onclick="document.querySelector('.main').scrollIntoView({behavior:'smooth'})">Shop Now →</button>
+      <span class="hero-note">📦 <span>2 crore+</span> happy deliveries</span>
+    </div>
+  </div>
+  <div class="hero-visual">🛵</div>
+</div>
+
+<div class="page">
+  <!-- SIDEBAR CATEGORIES -->
+  <div class="sidebar" id="sidebar"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- BANNERS -->
+    <div class="banner-row">
+      <div class="banner banner-1" onclick="toast('Offer applied!')">
+        <div>
+          <div class="banner-title">Fresh Vegetables<br>& Fruits 🥦</div>
+          <div class="banner-sub">Farm to door in under 10 minutes</div>
+          <div class="banner-tag">Up to 40% OFF</div>
+        </div>
+        <div class="banner-emoji">🥬</div>
+      </div>
+      <div class="banner banner-2" onclick="toast('Code DAIRY20 copied!')">
+        <div>
+          <div class="banner-title">Dairy Essentials<br>Daily 🥛</div>
+          <div class="banner-sub">Amul, Mother Dairy & more</div>
+          <div class="banner-tag">Use DAIRY20</div>
+        </div>
+        <div class="banner-emoji">🧈</div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="sec-head">
+      <div class="sec-title" id="secTitle">🔥 Best Sellers</div>
+      <a class="sec-link">See all</a>
+    </div>
+    <div class="pgrid" id="pgrid"></div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">blink<em style="color:#fff">it</em></span>
+      <p>India's last-minute app. Order groceries, fresh produce, dairy, snacks and household essentials — delivered in 10 minutes.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a>About us</a><a>Careers</a><a>Blog</a><a>Press</a>
+    </div>
+    <div class="footer-col">
+      <h5>Help</h5>
+      <a>FAQs</a><a>Contact us</a><a>Track order</a><a>Return policy</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a>Privacy policy</a><a>Terms of service</a><a>Cookie policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Blinkit. All rights reserved.</span>
+    <span>🇮🇳 Made in India</span>
+  </div>
+</footer>
+
+<!-- OVERLAY + DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="drawer" id="drawer">
+  <div class="dhead">
+    <div class="dhead-left">
+      <h3>My Cart</h3>
+      <div class="dhead-delivery">⚡ Delivery in 8–10 mins</div>
+    </div>
+    <button class="dclose" onclick="closeCart()">✕</button>
+  </div>
+  <div class="dbody" id="dbody">
+    <div class="empty-cart">
+      <div class="empty-cart-img">🛒</div>
+      <h4>Your cart is empty</h4>
+      <p>Add items to get started</p>
+    </div>
+  </div>
+  <div class="dfooter" id="dfooter" style="display:none">
+    <div class="bill">
+      <div class="brow"><span>Item total</span><span id="bItemTotal">₹0</span></div>
+      <div class="brow"><span>Delivery fee</span><span class="free">FREE</span></div>
+      <div class="brow"><span>Handling charge</span><span>₹5</span></div>
+      <div class="brow total"><span>To pay</span><span id="bGrand">₹5</span></div>
+    </div>
+    <button class="paybtn" onclick="checkout()">
+      <span>Proceed to Pay</span>
+      <span class="paybtn-r" id="payAmt">₹0 →</span>
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+const cats=[
+  {e:'🛒',n:'All'},
+  {e:'🥛',n:'Dairy'},
+  {e:'🥦',n:'Veggies'},
+  {e:'🍎',n:'Fruits'},
+  {e:'🍞',n:'Bakery'},
+  {e:'🧃',n:'Drinks'},
+  {e:'🍪',n:'Snacks'},
+  {e:'🍚',n:'Staples'},
+  {e:'🧴',n:'Beauty'},
+  {e:'🧹',n:'Home'},
+  {e:'🍫',n:'Sweets'},
+  {e:'❄️',n:'Frozen'},
+  {e:'🐾',n:'Pet Care'},
+];
+
+const products=[
+  {id:1,n:'Amul Full Cream Milk',w:'1 L Tetra Pack',p:68,m:72,e:'🥛',d:6,c:'Dairy'},
+  {id:2,n:'Farm Fresh Eggs White',w:'6 pcs',p:54,m:60,e:'🥚',d:10,c:'Dairy'},
+  {id:3,n:'Amul Butter Unsalted',w:'100 g',p:55,m:58,e:'🧈',d:5,c:'Dairy'},
+  {id:4,n:'Epigamia Greek Yogurt',w:'90 g, Mango',p:40,m:50,e:'🫙',d:20,c:'Dairy'},
+  {id:5,n:'Britannia Whole Wheat Bread',w:'400 g',p:40,m:45,e:'🍞',d:11,c:'Bakery'},
+  {id:6,n:'Monginis Chocolate Cake',w:'500 g',p:349,m:399,e:'🎂',d:13,c:'Bakery'},
+  {id:7,n:'Banana — Robusta',w:'~500 g, 6 pcs',p:30,m:36,e:'🍌',d:17,c:'Fruits'},
+  {id:8,n:'Apple Royal Gala',w:'~600 g, 4 pcs',p:119,m:140,e:'🍎',d:15,c:'Fruits'},
+  {id:9,n:'Tomatoes',w:'500 g',p:22,m:28,e:'🍅',d:21,c:'Veggies'},
+  {id:10,n:'Onions',w:'1 kg',p:35,m:42,e:'🧅',d:17,c:'Veggies'},
+  {id:11,n:'Baby Spinach Leaves',w:'200 g',p:45,m:55,e:'🥬',d:18,c:'Veggies'},
+  {id:12,n:'Cucumber',w:'2 pcs ~400 g',p:18,m:22,e:'🥒',d:18,c:'Veggies'},
+  {id:13,n:"Lay's Classic Salted",w:'52 g',p:20,m:20,e:'🥔',d:0,c:'Snacks'},
+  {id:14,n:'Oreo Original',w:'120 g',p:35,m:40,e:'🍪',d:13,c:'Snacks'},
+  {id:15,n:'Maggi 2-Minute Noodles',w:'420 g (6 packs)',p:72,m:84,e:'🍜',d:14,c:'Snacks'},
+  {id:16,n:'Coca-Cola',w:'750 ml',p:40,m:45,e:'🥤',d:11,c:'Drinks'},
+  {id:17,n:'Tropicana Orange Juice',w:'1 L',p:99,m:120,e:'🧃',d:18,c:'Drinks'},
+  {id:18,n:'Basmati Rice Premium',w:'1 kg',p:89,m:100,e:'🍚',d:11,c:'Staples'},
+  {id:19,n:'Toor Dal',w:'500 g',p:68,m:78,e:'🫘',d:13,c:'Staples'},
+  {id:20,n:'Dove Beauty Bar',w:'100 g × 3',p:115,m:135,e:'🧼',d:15,c:'Beauty'},
+  {id:21,n:'Colgate MaxFresh',w:'150 g',p:79,m:90,e:'🦷',d:12,c:'Beauty'},
+  {id:22,n:'Vim Dishwash Bar',w:'400 g',p:38,m:45,e:'🧹',d:16,c:'Home'},
+  {id:23,n:'Cadbury Dairy Milk',w:'36 g',p:20,m:20,e:'🍫',d:0,c:'Sweets'},
+  {id:24,n:'Frozen Peas',w:'500 g',p:55,m:65,e:'❄️',d:15,c:'Frozen'},
+];
+
+let cart={};
+let active='All';
+
+// BUILD SIDEBAR
+const sb=document.getElementById('sidebar');
+cats.forEach((c,i)=>{
+  const d=document.createElement('div');
+  d.className='scat'+(i===0?' active':'');
+  d.innerHTML=`<span class="scat-emoji">${c.e}</span><span class="scat-label">${c.n}</span>`;
+  d.onclick=()=>switchCat(c.n,d);
+  sb.appendChild(d);
+});
+
+function switchCat(name,el){
+  document.querySelectorAll('.scat').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  active=name;
+  document.getElementById('searchInput').value='';
+  renderProducts(name==='All'?products:products.filter(p=>p.c===name));
+  const cat=cats.find(c=>c.n===name);
+  document.getElementById('secTitle').textContent=name==='All'?'🔥 Best Sellers':`${cat.e} ${name}`;
+}
+
+function filterProducts(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  if(!q){renderProducts(active==='All'?products:products.filter(p=>p.c===active));return}
+  renderProducts(products.filter(p=>p.n.toLowerCase().includes(q)||p.c.toLowerCase().includes(q)));
+  document.getElementById('secTitle').textContent=`🔍 Results for "${q}"`;
+}
+
+function renderProducts(list){
+  const g=document.getElementById('pgrid');
+  g.innerHTML='';
+  if(!list.length){
+    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--muted);font-size:15px">😕 No products found</div>';
+    return;
+  }
+  list.forEach(p=>{
+    const qty=cart[p.id]?.qty||0;
+    const card=document.createElement('div');
+    card.className='pcard';
+    card.id='pc'+p.id;
+    card.innerHTML=`
+      ${p.d>0?`<div class="pdiscount">${p.d}% OFF</div>`:''}
+      <div class="pimg">${p.e}</div>
+      <div class="pinfo">
+        <div class="pname">${p.n}</div>
+        <div class="pweight">${p.w}</div>
+        <div class="pfooter">
+          <div>
+            <div class="pprice">₹${p.p}</div>
+            ${p.m>p.p?`<div class="pmrp">₹${p.m}</div>`:''}
+          </div>
+          ${qty===0
+            ?`<button class="addbtn" onclick="addItem(${p.id})">ADD</button>`
+            :`<div class="qtyctrl">
+                <button class="qbtn" onclick="removeItem(${p.id})">−</button>
+                <span class="qnum">${qty}</span>
+                <button class="qbtn" onclick="addItem(${p.id})">+</button>
+              </div>`
+          }
+        </div>
+      </div>`;
+    g.appendChild(card);
+  });
+}
+
+function addItem(id){
+  const p=products.find(x=>x.id===id);
+  if(!cart[id])cart[id]={...p,qty:0};
+  cart[id].qty++;
+  syncCart();
+  renderProducts(active==='All'?products:products.filter(p=>p.c===active));
+  toast(`${p.e} Added to cart`);
+}
+
+function removeItem(id){
+  if(!cart[id])return;
+  cart[id].qty--;
+  if(cart[id].qty===0)delete cart[id];
+  syncCart();
+  renderProducts(active==='All'?products:products.filter(p=>p.c===active));
+}
+
+function syncCart(){
+  const items=Object.values(cart);
+  const qty=items.reduce((s,i)=>s+i.qty,0);
+  const total=items.reduce((s,i)=>s+i.p*i.qty,0);
+  document.getElementById('cartCount').textContent=qty;
+  const cp=document.getElementById('cartPrice');
+  const ca=document.getElementById('cartAmt');
+  if(total>0){cp.style.display='block';ca.textContent=total;}
+  else{cp.style.display='none';}
+  renderCart(items,total);
+}
+
+function renderCart(items,total){
+  const body=document.getElementById('dbody');
+  const foot=document.getElementById('dfooter');
+  if(!items.length){
+    body.innerHTML=`<div class="empty-cart"><div class="empty-cart-img">🛒</div><h4>Your cart is empty</h4><p>Add items to get started</p></div>`;
+    foot.style.display='none';return;
+  }
+  body.innerHTML=items.map(it=>`
+    <div class="citem">
+      <div class="citem-img">${it.e}</div>
+      <div class="citem-info">
+        <div class="citem-name">${it.n}</div>
+        <div class="citem-w">${it.w}</div>
+      </div>
+      <div class="citem-right">
+        <div class="qtyctrl">
+          <button class="qbtn" onclick="removeItem(${it.id})">−</button>
+          <span class="qnum">${it.qty}</span>
+          <button class="qbtn" onclick="addItem(${it.id})">+</button>
+        </div>
+        <div class="citem-price">₹${it.p*it.qty}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('bItemTotal').textContent='₹'+total;
+  document.getElementById('bGrand').textContent='₹'+(total+5);
+  document.getElementById('payAmt').textContent='₹'+(total+5)+' →';
+  foot.style.display='block';
+}
+
+function openCart(){
+  document.getElementById('drawer').classList.add('on');
+  document.getElementById('overlay').classList.add('on');
+}
+function closeCart(){
+  document.getElementById('drawer').classList.remove('on');
+  document.getElementById('overlay').classList.remove('on');
+}
+
+function checkout(){
+  cart={};
+  syncCart();
+  closeCart();
+  toast('🎉 Order placed! Arriving in 10 minutes');
+}
+
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toastEl');
+  t.textContent=msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('on'),2600);
+}
+
+renderProducts(products);
+</script>
+</body>
+</html>
